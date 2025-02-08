@@ -1,0 +1,34 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Flask Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header>
+        <h1>Welcome to the Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('add_user') }}">Add User</a></li>
+                <li><a href="{{ url_for('view_users') }}">View Users</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content of the Page -->
+    <main>
+        {% block content %} <!-- This is where page-specific content will be injected -->
+        {% endblock %}
+    </main>
+
+    <!-- Optional Footer -->
+    <footer>
+        <p>&copy; 2025 Flask App</p>
+    </footer>
+</body>
+</html>
