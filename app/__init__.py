@@ -16,13 +16,15 @@ def create_app(config_name='development'):
 
     # Initialize database connection
     DatabaseConnection.initialize(app.config['DATABASE_URI'])
-
+    print(f" app file.... {__name__}")
+    print(f" app file app.... {app}")
     # Register blueprints
     from app.routes.order_routes import bp as order_bp
     from app.routes.committee_routes import bp as committee_bp
     from app.routes.department_routes import bp as department_bp
     from app.routes.estimator_routes import bp as estimator_bp
-
+    print(f" app file.... {committee_bp}")
+    
     app.register_blueprint(order_bp, url_prefix='/api/orders')
     app.register_blueprint(committee_bp, url_prefix='/api/committees')
     app.register_blueprint(department_bp, url_prefix='/api/departments')

@@ -4,7 +4,7 @@ from app.database.connection import DatabaseConnection  # Import the connection
 import pyodbc
 
 bp = Blueprint('committees', __name__, url_prefix='/api/committees')
-
+print(f" app file bp.... {bp}")
 @bp.route('/', methods=['GET'])
 def get_all_committees():
     try:

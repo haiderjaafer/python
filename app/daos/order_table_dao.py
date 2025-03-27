@@ -2,6 +2,7 @@ from typing import Optional
 from app.daos.base_dao import BaseDAO
 from app.models.order_table import OrderTable
 import pyodbc
+from app.models.order_table import OrderDetails
 
 class OrderTableDAO(BaseDAO):
     def __init__(self, connection):
@@ -117,3 +118,76 @@ class OrderTableDAO(BaseDAO):
         finally:
             if cursor:
                 cursor.close()
+    
+
+
+    
+
+    # app/daos/order_table_dao.py
+
+
+    def get_order_details(self, order_id: int) -> Optional[OrderDetails]:
+        """
+        Get complete order details with joins
+        Returns None if order not found
+        """
+        query = """
+        SELECT 
+            o.*,
+            p.procedureName,
+            ISNULL(c.Com, 'no com') AS committee,
+            ISNULL(d.Dep, 'no dep') AS department,
+            u.username
+        FROM dbo.orderTable o
+        INNER JOIN dbo.proceduresTable p ON p.procedureID = o.procedureID
+        LEFT JOIN dbo.ComTB c ON o.coID = c.coID
+        LEFT JOIN dbo.DepTB d ON o.deID = d.deID
+        LEFT JOIN dbo.users u ON o.userID = u.id
+        WHERE o.orderID = ?
+        """
+        
+        cursor = None
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(query, (order_id,))
+            row = cursor.fetchone()
+            
+            if not row:
+                return None
+                
+            # Create OrderDetails instance with all fields
+            return OrderDetails(
+                # Original OrderTable fields
+                orderNo=row.orderNo,
+                orderYear=row.orderYear,
+                orderDate=row.orderDate,
+                orderType=row.orderType,
+                coID=row.coID,
+                deID=row.deID,
+                materialName=row.materialName,
+                estimatorID=row.estimatorID,
+                procedureID=row.procedureID,
+                orderStatus=row.orderStatus,
+                notes=row.notes,
+                achievedOrderDate=row.achievedOrderDate,
+                priceRequestedDestination=row.priceRequestedDestination,
+                finalPrice=row.finalPrice,
+                currencyType=row.currencyType,
+                cunnrentDate=row.cunnrentDate,
+                color=row.color,
+                checkOrderLink=row.checkOrderLink,
+                userID=row.userID,
+                # Joined fields
+                procedureName=row.procedureName,
+                committee=row.committee,
+                department=row.department,
+                username=row.username
+            )
+            
+        except pyodbc.Error as e:
+            print(f"Database error in get_order_details: {str(e)}")
+            raise
+        finally:
+            if cursor:
+                cursor.close()
+    

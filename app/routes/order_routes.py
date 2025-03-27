@@ -70,3 +70,55 @@ def count_all_order_no():
     except Exception as e:
         print(f"Unexpected error: {e}")
         return jsonify({"error": "An unexpected error occurred"}), 500
+    
+
+
+
+
+# app/routes/order_routes.py
+@bp.route('/<int:order_id>/details', methods=['GET'])
+def get_order_details(order_id):
+    try:
+        dao = OrderTableDAO(DatabaseConnection.get_connection())
+        order_details = dao.get_order_details(order_id)
+        
+        if not order_details:
+            return jsonify({"error": "Order not found"}), 404
+            
+        # Convert to dictionary (including all fields)
+        response_data = {
+            # Original fields
+         "orderNo": order_details.orderNo,
+            "orderYear": order_details.orderYear,
+            "orderDate": order_details.orderDate.isoformat() if order_details.orderDate else None,
+            "orderType": order_details.orderType,
+            "coID": order_details.coID,
+            "deID": order_details.deID,
+            "materialName": order_details.materialName,
+            "estimatorID": order_details.estimatorID,
+            "procedureID": order_details.procedureID,
+            "orderStatus": order_details.orderStatus,
+            "notes": order_details.notes,
+            "achievedOrderDate": order_details.achievedOrderDate.isoformat() if order_details.achievedOrderDate else None,
+            "priceRequestedDestination": order_details.priceRequestedDestination,
+            "finalPrice": order_details.finalPrice,
+            "currencyType": order_details.currencyType,
+            "cunnrentDate": order_details.cunnrentDate.isoformat() if order_details.cunnrentDate else None,
+            "color": order_details.color,
+            "checkOrderLink": order_details.checkOrderLink,
+            "userID": order_details.userID,
+            # Joined fields
+            "procedureName": order_details.procedureName,
+            "committee": order_details.committee,
+            "department": order_details.department,
+            "username": order_details.username
+        }
+        
+        return jsonify(response_data), 200
+        
+    except pyodbc.Error as e:
+        print(f"Database error: {str(e)}")
+        return jsonify({"error": "Database operation failed"}), 500
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
