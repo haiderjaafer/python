@@ -7,3 +7,4 @@ class ProductionConfig:
         'UID=sa;'
         'PWD=production_password'
     )
+    PDF_BASE_PATH = 'D:/order_pdfs'  # Add this line

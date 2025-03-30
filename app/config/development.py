@@ -7,3 +7,4 @@ class DevelopmentConfig:
         'UID=sa;'
         'PWD=123'
     )
+    PDF_BASE_PATH = 'D:/order_pdfs'  # Add this line
