@@ -4,12 +4,20 @@ from app.models.order_table import OrderTable
 from app.database.connection import DatabaseConnection  # Import the connection
 from datetime import datetime
 import pyodbc
+from flask_cors import cross_origin
 
 bp = Blueprint('orders', __name__, url_prefix='/api/orders')
 
-@bp.route('/', methods=['POST'])
+@bp.route('', methods=['POST'],)
+
 def create_order():
+    
     data = request.json
+
+    print("Request method:", request.method)
+    print("Headers:", dict(request.headers))
+    print("Data:", request.get_data())
+
     try:
         # Convert date strings to date objects
         order_date = datetime.strptime(data.get('orderDate'), '%Y-%m-%d').date() if data.get('orderDate') else None
@@ -25,7 +33,8 @@ def create_order():
             deID=data.get('deID'),
             materialName=data.get('materialName'),
             estimatorID=data.get('estimatorID'),
-            procedureID=data.get('procedureID'),
+            procedureID=data.get('procedureID'),   
+            
             orderStatus=data.get('orderStatus'),
             notes=data.get('notes'),
             achievedOrderDate=achieved_order_date,
@@ -33,7 +42,7 @@ def create_order():
             finalPrice=data.get('finalPrice'),
             currencyType=data.get('currencyType'),
             checkOrderLink=data.get('checkOrderLink'),
-            userID=data.get('userID')
+            userID=data.get('userID')  
         )
 
         # Validate the order

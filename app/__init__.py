@@ -1,16 +1,26 @@
 from flask import Flask
 from app.database.connection import DatabaseConnection
+from flask_cors import CORS
 
-def create_app(config_name='development'):
+def create_app(config_name='production'):
     app = Flask(__name__)
+    #app.url_map.strict_slashes = False  # Critical!
+    # Allow requests from Next.js dev server
+    #CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+    # Dynamic CORS configuration
 
-    # Load configuration
-    # if config_name == 'development':
-    #     from app.config.development import DevelopmentConfig
-    #     app.config.from_object(DevelopmentConfig)
-    # elif config_name == 'production':
-    #     from app.config.production import ProductionConfig
-    #     app.config.from_object(ProductionConfig)
+    # CORS Configuration
+    CORS(
+    app,
+    origins=["http://localhost:3000"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+    supports_credentials=True
+)
+
+
+
+ 
     if config_name == 'development':
         from app.config.development import DevelopmentConfig
         app.config.from_object(DevelopmentConfig)
@@ -36,7 +46,7 @@ def create_app(config_name='development'):
 
     print(f" app file.... {committee_bp}")
     
-    app.register_blueprint(order_bp, url_prefix='/api/orders')
+    app.register_blueprint(order_bp)
     app.register_blueprint(committee_bp, url_prefix='/api/committees')
     app.register_blueprint(department_bp, url_prefix='/api/departments')
     app.register_blueprint(estimator_bp, url_prefix='/api/estimators')

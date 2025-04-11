@@ -1,10 +1,10 @@
 class ProductionConfig:
-    DEBUG = False
+    DEBUG = True
     DATABASE_URI = (
         'DRIVER={ODBC Driver 17 for SQL Server};'
-        'SERVER=production_server;'
+        'SERVER=localhost;'
         'DATABASE=ContractsProcedures;'
         'UID=sa;'
-        'PWD=production_password'
+        'PWD=123'
     )
     PDF_BASE_PATH = 'D:/order_pdfs'  # Add this line
